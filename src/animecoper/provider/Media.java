@@ -3,16 +3,27 @@ package animecoper.provider;
 import java.io.File;
 
 /**
- * 指定されたディレクトリ内のmdeiaファイルを扱うクラス
+ * タイトルと種類毎にメディアを表現するクラス
+ * 
  * @author van
- *
  */
 public class Media {
+	/** メディア種別 */
+	public final MediaType type;
 	
-	public final MediaType type;	
+	/** メディアのタイトル */
 	public final String title;
+	
+	/** メディアのファイル */
 	public final File file;
 	
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param type メディア種別
+	 * @param title メディアのタイトル
+	 * @param file メディアのファイル
+	 */
 	public Media(MediaType type, String title, File file) {
 		super();
 		this.type = type;
@@ -20,6 +31,9 @@ public class Media {
 		this.file = file;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -29,6 +43,9 @@ public class Media {
 		return result;
 	}
 
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

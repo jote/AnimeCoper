@@ -17,34 +17,40 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * アニメ録画のための {@link MediaSetProvider} 実装
+ * 
+ * @author van
+ */
 public class AnimeMediaSetProvider implements MediaSetProvider {
 	/** 拡張子を取り出す正規表現 */
 	private static final Pattern PATTERN_EXTENSION = Pattern.compile("\\.(.*?)$");
+	
+	/** アニメ録画のファイルがあるディレクトリ */
+	private static final File ANIME_DIR =  new File("/home/foltia/php/DLNAroot/02-アニメ自動録画/");
 
-	// アニメ録画された mediaSet の名前一覧
+	/** アニメ録画された全てのメディアセット名 */
 	private final List<String> mediaSetNameList;
-	// アニメ録画された mediaSet 名と録画ファイルの Map
+	
+	/** アニメ録画されたメディアセット名と {@link MediaSet} のマップ */
 	private final Map<String, MediaSet> mediaSetMap;
-	// アニメ録画のファイルがあるディレクトリ
-	private final File animeDir;
 
 	/**
-	 * mediaSetMap を初期化します。
-	 * アニメ録画したファイルを保存しているディレクトリを設定します。
-	 * アニメ録画した番組名( mediaSetName となるディレクトリ名) を mediaSetNameList に格納します。
-	 * @throws IOException 
+	 * コンストラクタ
+	 * 
+	 * @throws IOException 入出力例外が発生した場合
 	 */
 	public AnimeMediaSetProvider() throws IOException {
 		super();
+		
 		this.mediaSetNameList = new ArrayList<>();
 		this.mediaSetMap = new HashMap<>();
-		this.animeDir = new File("/home/foltia/php/DLNAroot/02-アニメ自動録画/");
-		//animeDirディレクトリを巡回してmediaSetNameを集める
-		Files.walkFileTree(animeDir.toPath(), new SimpleFileVisitor<Path>() {
+		
+		// ディレクトリを巡回してmediaSetNameを集める
+		Files.walkFileTree(ANIME_DIR.toPath(), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dirPath, BasicFileAttributes attrs) throws IOException {
-				if(dirPath.getParent().getParent().endsWith(animeDir.toPath())) {
+				if(dirPath.getParent().getParent().endsWith(ANIME_DIR.toPath())) {
 					AnimeMediaSetProvider.this.mediaSetNameList.add(dirPath.getFileName().toString());
 				}
 				return FileVisitResult.CONTINUE;
@@ -53,10 +59,7 @@ public class AnimeMediaSetProvider implements MediaSetProvider {
 	}
 	
 	/**
-	 * 指定された mediaSetName と一致する mediaSet を取得する
-	 * @param mediaSetName 取得したい mediaSet の名前
-	 * @return 指定した mediaSet
-	 * @throws IllegalArgumentException 指定した mediaSet が存在しません
+	 * @see animecoper.provider.MediaSetProvider#getMediaSet(java.lang.String)
 	 */
 	@Override
 	public MediaSet getMediaSet(String mediaSetName) {
@@ -68,7 +71,7 @@ public class AnimeMediaSetProvider implements MediaSetProvider {
 		}
 		
 		// 指定されたディレクトリが存在するかチェック
-		File targetDir = new File(this.animeDir.toString() + "/" + mediaSetName);
+		File targetDir = new File(ANIME_DIR.toString() + "/" + mediaSetName);
 		if (!targetDir.isDirectory()) {
 			throw new IllegalArgumentException("指定したmediaSetは存在しません: "+ mediaSetName);
 		}
@@ -80,23 +83,21 @@ public class AnimeMediaSetProvider implements MediaSetProvider {
 			if (!m.find()) {
 				continue;
 			}
+			
 			MediaType type;
 			try {
 				type = MediaType.valueOf(m.group(1));
 			} catch (IllegalArgumentException e) {
-				// サポートしていない拡張子は meidas に入れない
-				continue;
+				continue; // サポートしていない拡張子は meidas に入れない
 			}
+			
 			// anime ファイルは 話数_サブタイトル_type_id の形式になっているので分割
 			String[] splitTitle = mediaFile.getName().split("_", 3);
 			String storyNumber = splitTitle[0];
 			String subTitle = splitTitle[1];
-			String title = type+ "#" + storyNumber + "_" + subTitle;
+			String title = type + "#" + storyNumber + "_" + subTitle;
 			
-
-			Media media = new Media(type, title, mediaFile);
-			medias.add(media);
-
+			medias.add(new Media(type, title, mediaFile));
 		}
 		
 		// mediaSetName は 番組ID-番組名 となっているので 番組名だけをMediaSetに設定する
@@ -106,6 +107,9 @@ public class AnimeMediaSetProvider implements MediaSetProvider {
 		return mediaSet;
 	}
 
+	/**
+	 * @see animecoper.provider.MediaSetProvider#mediaSetNames()
+	 */
 	@Override
 	public Enumeration<String> mediaSetNames() {
 		// TODO Auto-generated method stub
