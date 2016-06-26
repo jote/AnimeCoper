@@ -1,25 +1,25 @@
-/**
- * 
- */
 package animecoper.provider;
 
 import java.util.Enumeration;
 
 /**
- * @author van
+ * すべてのメディアセット名、及び {@link MediaSet} を提供するインターフェイス 
  *
- * mediaの情報を扱うインターフェース
+ * @author van
  */
 public interface MediaSetProvider {
 	/**
-	 * mediaSet のリストをEnumerationを使って取得できる
-	 * @return String
+	 * メディアセット名を列挙します
+	 * 
+	 * @return メディアセット名を列挙子
 	 */
 	public Enumeration<String> mediaSetNames();
+	
 	/**
-	 * mediaSetを取得する
-	 * @param mediaSetName
-	 * @return MediaSet
+	 * 指定されたメディアセット名から {@link MediaSet} を取得します
+	 * 
+	 * @param mediaSetName メディアセット名
+	 * @return MediaSet 指定されたメディアセットの {@link MediaSet}
 	 */
 	public MediaSet getMediaSet(String mediaSetName);
 }

@@ -17,34 +17,39 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * キーワード録画のための {@link MediaSetProvider} 実装
+ * 
+ * @author van
+ */
 public class KeywordMediaSetProvider implements MediaSetProvider {
 	/** 拡張子を取り出す正規表現 */
 	private static final Pattern PATTERN_EXTENSION = Pattern.compile("\\.(.*?)$");
 	
-	// キーワード録画された mediaSet の名前一覧
-	private final List<String> mediaSetNameList;
-	// キーワード録画された mediaSet 名と録画ファイルの Map
-	private final Map<String, MediaSet> mediaSetMap;
 	/** キーワード録画された media が置かれるディレクトリ */
-	private final File keywordDir;
+	private static final File KEYWORD_DIR = new File("/home/foltia/php/DLNAroot/04-キーワード録画/");
+	
+	/** キーワード録画された mediaSet の名前一覧 */
+	private final List<String> mediaSetNameList;
+	
+	/** キーワード録画された mediaSet 名と録画ファイルの Map */
+	private final Map<String, MediaSet> mediaSetMap;
 
 	/**
-	 * mediaSetMap を初期化します。
-	 * キーワード録画したファイルを保存しているディレクトリを設定します。
-	 * キーワード録画した番組名( mediaSetName となるディレクトリ名) を mediaSetNameList に格納します。
-	 * @throws IOException 
+	 * コンストラクタ
 	 * 
+	 * @throws IOException 入出力例外が発生した場合 
 	 */
 	public KeywordMediaSetProvider() throws IOException {
 		super();
 		this.mediaSetNameList = new ArrayList<>();
 		this.mediaSetMap = new HashMap<>();
-		this.keywordDir = new File("/home/foltia/php/DLNAroot/04-キーワード録画/");
+		
 		// mediaSetNameListを用意する
-		Files.walkFileTree(this.keywordDir.toPath(), new SimpleFileVisitor<Path>() {
+		Files.walkFileTree(KEYWORD_DIR.toPath(), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dirPath, BasicFileAttributes attrs) throws IOException {
-				if(dirPath.getParent().endsWith(KeywordMediaSetProvider.this.keywordDir.toPath())) {
+				if(dirPath.getParent().endsWith(KEYWORD_DIR.toPath())) {
 					KeywordMediaSetProvider.this.mediaSetNameList.add(dirPath.getFileName().toString());
 				}
 				return FileVisitResult.CONTINUE;
@@ -74,7 +79,7 @@ public class KeywordMediaSetProvider implements MediaSetProvider {
 		if(this.mediaSetMap.containsKey(mediaSetName)) {
 			return this.mediaSetMap.get(mediaSetName);
 		}
-		Path targetDir = new File(this.keywordDir.toString() + "/" + mediaSetName).toPath();
+		Path targetDir = new File(KEYWORD_DIR.toString() + "/" + mediaSetName).toPath();
 		if (!targetDir.toFile().isDirectory()) {
 			throw new IllegalArgumentException("指定したmediaSetは存在しません: "+ mediaSetName);
 		}

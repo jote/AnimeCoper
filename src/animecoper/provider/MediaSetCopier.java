@@ -12,6 +12,7 @@ public class MediaSetCopier {
 
 	/**
 	 * copyDir の場所に mediaSet 内の media ファイル全てをコピーします
+	 * 
 	 * @throws IOException コピーに失敗
 	 */
 	public void copy() throws IOException {
@@ -23,6 +24,7 @@ public class MediaSetCopier {
 
 	/**
 	 * mdeiaSet を使ってコピー先のディレクトリを準備をします
+	 * 
 	 * @param コピーしたい mediaSet を指定します
 	 * @throws IOException コピー用のディレクトリが無い
 	 */

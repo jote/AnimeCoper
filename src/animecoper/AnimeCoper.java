@@ -8,12 +8,23 @@ import animecoper.provider.MediaSetProvider;
 import animecoper.provider.MediaSetProviderFactory;
 import animecoper.provider.MediaSetProviderType;
 
+/**
+ * foltia AnimeLocker で録画したアニメをコピーするエントリーポイント
+ * 
+ * コマンド：
+ * java animecoper.AnimeCoper [録画種別] 
+ * 
+ * @author van
+ */
 public class AnimeCoper {
+	/** メディアを取得する為の {@link MediaSetProvider} */
 	private final MediaSetProvider provider;
+	
 	/**
 	 * AnimeRocker で録画した動画を録画の種類別にバックアップをとります。
-	 * @param args 録画の種類
-	 * @throws Exception
+	 * 
+	 * @param args コマンド引数
+	 * @throws Exception 実行時の例外
 	 */
 	public static void main(String[] args) throws Exception {
 		try {
@@ -26,6 +37,7 @@ public class AnimeCoper {
 
 	/**
 	 * 指定された録画の種類から provider を作成しコピーします。
+	 * 
 	 * @param type 録画の種類
 	 * @throws Exception
 	 */
@@ -42,6 +54,4 @@ public class AnimeCoper {
 			copier.copy();
 		}
 	}
-	
-	
 }

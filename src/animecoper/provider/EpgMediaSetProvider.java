@@ -17,17 +17,24 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * EPG録画の為の {@link MediaSetProvider} 実装
+ * 
+ * @author van
+ */
 public class EpgMediaSetProvider implements MediaSetProvider {
 	/** 拡張子を取り出す正規表現 */
 	public static final Pattern PATTERN_EXTENSION = Pattern.compile("\\.(.*?)$");
-	/** providerが扱う録画種類 */
-	public static final String ProviderType = "epg";
 	
+	/** providerが扱う録画種類 */
+	public static final String PROVIDER_NAME = "epg";
 	
 	/** EPG録画された mediaSet の名前一覧 */
 	private final List<String> mediaSetNameList;
+	
 	/** EPG録画された mediaSet 名と録画ファイルの Map */
 	private final Map<String, MediaSet> mediaSetMap;
+	
 	/** EPG録画のファイルがあるディレクトリ */
 	private final File epgDir;
 
@@ -35,7 +42,6 @@ public class EpgMediaSetProvider implements MediaSetProvider {
 	 * mediaSetMap を初期化します。
 	 * EPG録画したファイルを保存しているディレクトリを設定します。
 	 * EPG録画した番組ディレクトリ名は epg のみで、 mediaSetNameList に格納します。
-
 	 */
 	public EpgMediaSetProvider() {
 		super();
@@ -44,15 +50,21 @@ public class EpgMediaSetProvider implements MediaSetProvider {
 		this.epgDir = new File("/home/foltia/php/DLNAroot/03-EPG録画/");
 		
 		// mediaSetName はEPG録画の場合 epg 一つだけ
-		this.mediaSetNameList.add(ProviderType);
+		this.mediaSetNameList.add(PROVIDER_NAME);
 	}
 
+	/**
+	 * @see animecoper.provider.MediaSetProvider#mediaSetNames()
+	 */
 	@Override
 	public Enumeration<String> mediaSetNames() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * @see animecoper.provider.MediaSetProvider#getMediaSet(java.lang.String)
+	 */
 	@Override
 	public MediaSet getMediaSet(String mediaSetName) {
 		Set<Media> medias = new HashSet<Media>();
@@ -60,8 +72,9 @@ public class EpgMediaSetProvider implements MediaSetProvider {
 		if (this.mediaSetMap.containsKey(mediaSetName)) {
 			return this.mediaSetMap.get(mediaSetName);
 		}
-		MediaSet mediaSet;
+		
 		// EPG録画ディレクトリ以下の録画ファイルから Media を作り medias に格納する
+		MediaSet mediaSet;
 		try {
 			Files.walkFileTree(this.epgDir.toPath(), new SimpleFileVisitor<Path> (){
 				public FileVisitResult visitFile(Path targetFilePath, BasicFileAttributes attrs) {
@@ -85,8 +98,8 @@ public class EpgMediaSetProvider implements MediaSetProvider {
 					return FileVisitResult.CONTINUE;
 				}
 			});
-			mediaSet = new MediaSet(ProviderType, medias);
-			this.mediaSetMap.put(ProviderType, mediaSet);
+			mediaSet = new MediaSet(PROVIDER_NAME, medias);
+			this.mediaSetMap.put(PROVIDER_NAME, mediaSet);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
