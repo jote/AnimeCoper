@@ -50,6 +50,9 @@ public class AnimeCoper {
 			String mediaSetName = e.nextElement();
 			
 			MediaSet mediaSet = provider.getMediaSet(mediaSetName);
+			if (mediaSet == null) {
+				continue;
+			}
 			MediaSetCopier copier = new MediaSetCopier(mediaSet);
 			copier.copy();
 		}
