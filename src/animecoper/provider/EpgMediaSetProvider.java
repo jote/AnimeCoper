@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +60,15 @@ public class EpgMediaSetProvider implements MediaSetProvider {
 	@Override
 	public Enumeration<String> mediaSetNames() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Enumeration<String>() {
+			private Iterator<String> i = mediaSetNameList.iterator();
+			public boolean hasMoreElements() {
+				return i.hasNext();
+			}
+			public String nextElement() {
+				return i.next();
+			} 
+		};
 	}
 
 	/**
