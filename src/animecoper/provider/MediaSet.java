@@ -24,6 +24,7 @@ public class MediaSet {
 	 */
 	public MediaSet(String name, Set<Media> medias) {
 		super();
+		this.name = name;
 		this.medias = medias;
 	}
 

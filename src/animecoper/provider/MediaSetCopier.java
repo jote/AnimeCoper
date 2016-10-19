@@ -18,6 +18,9 @@ public class MediaSetCopier {
 	public void copy() throws IOException {
 		for (Media media : this.mediaSet.getAllMedias()) {
 			File copyFile = new File(this.copyDir.toString()+ "/" + media.title + "." + media.type);
+			if (copyFile.exists()) {
+				copyFile.delete();
+			}
 			Files.copy(media.file.toPath(), copyFile.toPath());
 		}
 	}
