@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +63,15 @@ public class KeywordMediaSetProvider implements MediaSetProvider {
 	 */
 	@Override
 	public Enumeration<String> mediaSetNames() {
-		return null;
+		return new Enumeration<String>() {
+			private Iterator<String> i = mediaSetNameList.iterator();
+			public boolean hasMoreElements() {
+				return i.hasNext();
+			}
+			public String nextElement() {
+				return i.next();
+			} 
+		};
 	}
 
 	/**
