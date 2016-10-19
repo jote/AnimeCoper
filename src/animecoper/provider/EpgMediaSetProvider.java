@@ -59,7 +59,6 @@ public class EpgMediaSetProvider implements MediaSetProvider {
 	 */
 	@Override
 	public Enumeration<String> mediaSetNames() {
-		// TODO Auto-generated method stub
 		return new Enumeration<String>() {
 			private Iterator<String> i = mediaSetNameList.iterator();
 			public boolean hasMoreElements() {
